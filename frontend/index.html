@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f5f1e9" />
+    <title>Chess — Play a thoughtful game</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css?v=start-control-1" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="./" aria-label="Chess home">
+          <span class="brand-mark">♞</span>
+          <span>chess<span class="brand-dot">.</span></span>
+        </a>
+
+        <div class="topbar-actions">
+          <button class="icon-button" type="button" aria-label="Toggle sound" title="Toggle sound">
+            <span aria-hidden="true">◖</span>
+          </button>
+          <button class="avatar" type="button" aria-label="Open profile">F</button>
+        </div>
+      </header>
+
+      <section class="game-layout" aria-label="Chess game">
+        <div class="board-column">
+          <div class="player-row opponent-row">
+            <div class="player-summary">
+              <div class="player-avatar opponent-avatar">♟</div>
+              <div>
+                <strong id="opponent-name">Opponent</strong>
+                <span class="player-subtitle" id="opponent-subtitle"><span class="online-dot"></span> Playing online</span>
+              </div>
+            </div>
+            <div class="clock" id="opponent-clock">10:00</div>
+          </div>
+
+          <div class="board-frame">
+            <div class="board" id="board" role="grid" aria-label="Chess board"></div>
+          </div>
+
+          <div class="player-row current-player-row">
+            <div class="player-summary">
+              <div class="player-avatar current-avatar">F</div>
+              <div>
+                <strong id="current-player-name">You</strong>
+                <span class="player-subtitle" id="current-player-subtitle">White · 1200</span>
+              </div>
+            </div>
+            <div class="clock" id="player-clock">10:00</div>
+          </div>
+        </div>
+
+        <aside class="game-panel">
+          <div class="panel-heading">
+            <div>
+              <span class="eyebrow">Casual game</span>
+              <h1>Make your move</h1>
+            </div>
+            <span class="turn-pill" id="turn-label"><span class="turn-dot"></span> Your turn</span>
+          </div>
+
+          <div class="status-card" id="status-card">
+            <span class="status-icon">♟</span>
+            <div>
+              <strong id="status-title">White to move</strong>
+              <span id="status-message">Choose a piece to see its possible moves.</span>
+            </div>
+          </div>
+
+          <div class="room-card">
+            <span class="room-label">Game setup</span>
+            <div class="auth-actions">
+              <input id="username" class="room-input" type="text" placeholder="Username" autocomplete="username" />
+              <input id="password" class="room-input" type="password" placeholder="Password" autocomplete="current-password" />
+              <button class="secondary-button" id="login" type="button">Log in</button>
+              <button class="secondary-button" id="register" type="button">Register</button>
+            </div>
+            <p class="room-helper" id="auth-helper">Create an account to play and save games.</p>
+            <div class="game-options">
+              <label>Clock
+                <select id="time-control" class="room-input">
+                  <option value="2">2 min</option>
+                  <option value="3">3 min</option>
+                  <option value="5">5 min</option>
+                  <option value="10" selected>10 min</option>
+                  <option value="15">15 min</option>
+                </select>
+              </label>
+            </div>
+            <div class="room-actions">
+              <button class="secondary-button" id="create-room" type="button">Create room</button>
+              <input id="room-id" class="room-input" type="text" placeholder="Room code" maxlength="6" aria-label="Room code" />
+              <button class="secondary-button" id="join-room" type="button">Join</button>
+            </div>
+            <div class="room-actions mode-actions">
+              <button class="secondary-button" id="create-ai-room" type="button">Play AI</button>
+              <button class="secondary-button" id="ranked-match" type="button">Ranked match</button>
+            </div>
+            <button class="copy-link-button" id="copy-room-link" type="button" hidden>Copy invite link</button>
+            <p class="room-helper" id="room-helper">Create a room to get an invite link.</p>
+          </div>
+
+          <div class="moves-section">
+            <div class="section-heading">
+              <h2>Moves</h2>
+              <span id="move-count">0 moves</span>
+            </div>
+            <div class="move-list" id="move-list" aria-live="polite">
+              <p class="empty-moves">The game has just begun.</p>
+            </div>
+          </div>
+
+          <div class="panel-actions">
+            <button class="primary-button" id="start-game" type="button">Start game <span>↗</span></button>
+            <button class="secondary-button" id="new-game" type="button">New game</button>
+          </div>
+          <div class="panel-actions game-actions">
+            <button class="secondary-button" id="undo-move" type="button" disabled>Undo move</button>
+            <button class="secondary-button" id="offer-draw" type="button">Offer draw</button>
+            <button class="secondary-button" id="resign-game" type="button">Resign</button>
+          </div>
+
+          <p class="helper-text">Click a piece to see where it can move.</p>
+        </aside>
+      </section>
+
+      <footer class="footer-note">A simple board for thoughtful games.</footer>
+    </main>
+
+    <section class="promotion-picker" id="promotion-picker" hidden aria-label="Choose a promotion piece">
+      <button class="promotion-option" type="button" data-promotion="q" aria-label="Promote to queen">
+        <span class="promotion-piece" aria-hidden="true"></span>
+      </button>
+      <button class="promotion-option" type="button" data-promotion="r" aria-label="Promote to rook">
+        <span class="promotion-piece" aria-hidden="true"></span>
+      </button>
+      <button class="promotion-option" type="button" data-promotion="b" aria-label="Promote to bishop">
+        <span class="promotion-piece" aria-hidden="true"></span>
+      </button>
+      <button class="promotion-option" type="button" data-promotion="n" aria-label="Promote to knight">
+        <span class="promotion-piece" aria-hidden="true"></span>
+      </button>
+      <button class="promotion-cancel" id="cancel-promotion" type="button" aria-label="Cancel promotion">×</button>
+    </section>
+
+    <section class="result-overlay" id="result-overlay" hidden aria-live="polite">
+      <div class="result-card" role="dialog" aria-modal="true" aria-labelledby="result-title">
+        <span class="eyebrow">Game complete</span>
+        <h2 id="result-title">Draw</h2>
+        <p class="result-message" id="result-message"></p>
+
+        <div class="result-scoreboard">
+          <div class="result-player">
+            <span id="white-result-player">White</span>
+            <strong id="white-result-score">+0</strong>
+            <small id="white-result-rating">Rating: 1200</small>
+            <small id="white-rating-change">No rating change</small>
+            <small id="white-captured-pieces">No captures</small>
+          </div>
+          <div class="result-player">
+            <span id="black-result-player">Black</span>
+            <strong id="black-result-score">+0</strong>
+            <small id="black-result-rating">Rating: 1200</small>
+            <small id="black-rating-change">No rating change</small>
+            <small id="black-captured-pieces">No captures</small>
+          </div>
+        </div>
+
+        <div class="result-actions">
+          <button class="primary-button" id="result-new-game" type="button">New game</button>
+          <button class="secondary-button" id="result-close" type="button">View board</button>
+        </div>
+      </div>
+    </section>
+
+    <script src="app.js?v=start-control-1"></script>
+  </body>
+</html>
